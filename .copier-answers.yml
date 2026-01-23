@@ -1,0 +1,17 @@
+_commit: v1.0.0
+_src_path: gh:accexible/py-template
+dependencies:
+- rich
+- numpy
+- python-dotenv
+- pandas
+- torch
+description: A Python project for the class I'm giving on Big Data & Artificial Intelligence
+    for the specific course on Recommendation System
+maintainers:
+-   email: saericquintana@gmail.com
+    name: Èric Quintana Aguasca
+max_python_version: <=3.12
+min_python_version: '>=3.11'
+package_name: recommendation_system
+remote_repo_exists: false

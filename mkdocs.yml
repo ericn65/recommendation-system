@@ -1,0 +1,26 @@
+site_name: "recommendation_system documentation"
+
+nav:
+- Home: index.md
+- Code Reference: reference/
+
+theme:
+    name: "material"
+
+plugins:
+- search
+- mkdocstrings:
+    handlers:
+      python:
+        options:
+          docstring_style: numpy
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+          show_root_toc_entry: false
+          show_object_full_path: false
+- gen-files:
+    scripts:
+    - scripts/gen_ref_pages.py
+- literate-nav:
+    nav_file: SUMMARY.md
+- section-index

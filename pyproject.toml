@@ -1,0 +1,117 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm[toml]"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[tool.setuptools.packages.find]
+include = ["recommendation_system"]
+
+[project]
+name = "recommendation_system"
+description = "A Python project for the class I'm giving on Big Data & Artificial Intelligence for the specific course on Recommendation System"
+dynamic = ["version"]
+readme = "README.md"
+authors = [
+    { name = "Èric Quintana Aguasca", email = "saericquintana@gmail.com" },
+]
+maintainers = [
+    { name = "Èric Quintana Aguasca", email = "saericquintana@gmail.com" },
+]
+requires-python = ">=3.11,<=3.12"
+dependencies = [
+    "numpy>=2.4.1",
+    "pandas>=3.0.0",
+    "python-dotenv>=1.2.1",
+    "rich>=14.2.0",
+    "torch>=2.10.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff<1.0.0,>=0.13.2",
+    "mypy<2.0.0,>=1.4.1",
+    "pytest<9.0.0,>=8.3.4",
+    "pytest-cov",
+    "pre-commit",
+    "ipython",
+    "notebook",
+]
+docs = [
+    "mkdocs-gen-files>=0.5.0",
+    "mkdocs-literate-nav>=0.6.2",
+    "mkdocs-material>=9.6.22",
+    "mkdocs-section-index>=0.3.10",
+    "mkdocstrings[python]>=0.30.1",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.2"
+addopts = "-vvv -s --cov=recommendation_system --cov-report term-missing --cov-report xml:coverage.xml"
+testpaths = ["tests"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+[tool.mypy]
+files = ["**/*.py"]
+ignore_missing_imports = true
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".venv",
+    "build",
+    "dist",
+    "node_modules",
+    "__init__.py"
+]
+line-length = 88
+indent-width = 4
+target-version = "py311"
+
+[tool.ruff.lint]
+exclude = ["*.ipynb"]
+select = [
+    "A",    # flake8-builtins
+    "B",    # flake8-bugbear
+    "D",    # pydocstyle
+    "E",    # pycodestyle-error
+    "F",    # Pyflakes
+    "I",    # isort
+    "N",    # pep8-naming
+    "PD",   # pandas-vet
+    "TID",  # flake8-tidy-imports
+    "UP",   # pyupgrade
+]
+ignore = [
+    "D100",     # Checks for undocumented public module definitions
+    "D104",     # Checks for undocumented public package definitions
+    "D107",     # Checks for public __init__ method definitions that are missing docstrings
+    "D205",     # Checks for docstring summary lines that are not separated from the docstring description by one blank line.
+    "D212",     # Checks for docstring summary lines that are not positioned on the first physical line of the docstring
+    "D401",     # Checks for docstring first lines that are not in an imperative mood
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.isort]
+known-local-folder = [
+  "scripts",
+  "recommendation_system",
+  "tests",
+]
+
+[tool.ruff.lint.pep8-naming]
+classmethod-decorators = ["classmethod", "pydantic.field_validator"]
+extend-ignore-names = [
+    "F" # https://github.com/astral-sh/ruff/issues/18310
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = [
+    "D101",     # Checks for undocumented public class definitions.
+    "D105",     # Checks for undocumented magic method definitions.
+]
