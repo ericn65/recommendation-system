@@ -23,6 +23,7 @@ requires-python = ">=3.11,<=3.12"
 dependencies = [
     "numpy>=2.4.1",
     "pandas>=3.0.0",
+    "pytest>=8.4.2",
     "python-dotenv>=1.2.1",
     "rich>=14.2.0",
     "torch>=2.10.0",
