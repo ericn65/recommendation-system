@@ -21,11 +21,13 @@ maintainers = [
 ]
 requires-python = ">=3.11,<=3.12"
 dependencies = [
+    "networkx>=3.6.1",
     "numpy>=2.4.1",
     "pandas>=3.0.0",
     "pytest>=8.4.2",
     "python-dotenv>=1.2.1",
     "rich>=14.2.0",
+    "scikit-learn>=1.8.0",
     "torch>=2.10.0",
 ]
 
