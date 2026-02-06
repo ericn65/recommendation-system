@@ -1,6 +1,6 @@
 # recommendation-system
 
-A Python project for the class I'm giving on Big Data & Artificial Intelligence for the specific course on Recommendation System
+A Python project for the class I'm giving on Big Data & Artificial Intelligence for the specific course on Recommendation System. Keep being under construction with every class.
 
 ---
 
