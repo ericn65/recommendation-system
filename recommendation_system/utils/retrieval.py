@@ -12,6 +12,8 @@ from recommendation_system.networks.interfaces.retreival import (
 )
 from recommendation_system.utils.enums import RetrievalMethod
 
+RetrievalFunction = Callable[..., CandidateList]
+
 
 def content_based_retrieval(
     vector_db: dict[ItemId, Embedding],
@@ -71,14 +73,15 @@ def node2vec_retrieval(
 def ann_retrieval(
     index: ANNIndex,
     embedding: Embedding,
+    id_map: list[ItemId],
     top_k: int = 50,
-) -> list[int]:
+) -> CandidateList:
     """Retrieve nearest neighbors using ANN index (e.g., FAISS)."""
-    distances, ids = index.search(np.array([embedding]), top_k)
-    return list(ids[0])
+    _, ids = index.search(np.array([embedding]), top_k)
+    return [id_map[i] for i in ids[0]]
 
 
-RETRIEVAL_DISPATCHER: dict[RetrievalMethod, Callable] = {
+RETRIEVAL_DISPATCHER: dict[RetrievalMethod, RetrievalFunction] = {
     RetrievalMethod.CONTENT_BASED: content_based_retrieval,
     RetrievalMethod.MATRIX_FACTORIZATION: mf_retrieval,
     RetrievalMethod.NODE2VEC: node2vec_retrieval,

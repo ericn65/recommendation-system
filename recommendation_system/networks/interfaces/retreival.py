@@ -38,6 +38,16 @@ class ANNIndex(Protocol):
         ...
 
 
+class ANNEmbeddingModel(Protocol):
+    """Model providing embeddings for ANN retrieval."""
+
+    index: ANNIndex
+
+    def get_embedding(self, item: ItemId) -> Embedding:
+        """Middle interface to ensure interconnection."""
+        ...
+
+
 class RetrievalModel(Protocol):
     """Generic retrieval interface."""
 
