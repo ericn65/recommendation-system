@@ -1,18 +1,90 @@
-from collections.abc import Iterable
-
 import pandas as pd
+from scipy.stats import spearmanr
 
-from recommendation_system.metrics.precision import PrecisionAtK
-from recommendation_system.pipelines.recommender_pipeline import RecommenderPipeline
-from recommendation_system.recommenders.graph_recommender import GraphRecommender
 
-model = GraphRecommender(alpha=0.9)
+def generate_correlation_markdown_report(df_corr: pd.DataFrame) -> str:
+    """
+    Generate a markdown report summarizing the correlation analysis.
 
-pipeline = RecommenderPipeline(model=model, metrics=[PrecisionAtK()])
+    Args:
+        df_corr (pd.DataFrame): DataFrame containing global correlation data.
 
-interactions = pd.read_csv("READ-THE-PATH")
-test_interactions = pd.read_csv("READ-THE-PATH")
-test_users: Iterable = ...
-pipeline.fit(interactions)  # TODO: Implement the aspects to get interactions.
+    Returns
+    -------
+        str: Markdown formatted report.
+    """
+    # Global summary
+    global_summary = df_corr.groupby("feature").agg(
+        mean_corr=("correlation", "mean"),
+        std_corr=("correlation", "std"),
+        count=("correlation", "count"),
+    )
+    global_summary = global_summary.sort_values("mean_corr", ascending=False)
 
-scores = pipeline.evaluate(users=test_users, ground_truth=test_interactions, k=10)
+    # Summary by modality
+    modality_summary = df_corr.groupby(["feature", "modality"]).agg(
+        mean_corr=("correlation", "mean"),
+        std_corr=("correlation", "std"),
+        count=("correlation", "count"),
+    )
+    modality_summary = modality_summary.reset_index()
+
+    # Build markdown string
+    md = "# Correlation Analysis Report\n\n"
+
+    md += "## Global Summary\n\n"
+    md += global_summary.to_markdown() + "\n\n"
+
+    md += "## Summary by Modality\n\n"
+    for feature in global_summary.index:
+        md += f"### Feature: {feature}\n\n"
+        feature_modality = modality_summary[
+            modality_summary["feature"] == feature
+        ].set_index("modality")
+        md += feature_modality.to_markdown() + "\n\n"
+
+    return md
+
+
+def main():
+    """Trial to ensure we can read everythin."""
+    # Load data
+    df = pd.read_csv("data.csv")
+
+    # Calculate global correlations
+    features = [col for col in df.columns if col not in ["target", "modality"]]
+    correlations = []
+    for feature in features:
+        corr, _ = spearmanr(df[feature], df["target"])
+        correlations.append({"feature": feature, "correlation": corr})
+
+    df_corr = pd.DataFrame(correlations)
+
+    # Add modality information if available
+    if "modality" in df.columns:
+        modalities = df["modality"].unique()
+        modality_corrs = []
+        for modality in modalities:
+            df_mod = df[df["modality"] == modality]
+            for feature in features:
+                corr, _ = spearmanr(df_mod[feature], df_mod["target"])
+                modality_corrs.append(
+                    {"feature": feature, "modality": modality, "correlation": corr}
+                )
+        df_corr_modality = pd.DataFrame(modality_corrs)
+        df_corr = df_corr.merge(
+            df_corr_modality.groupby("feature")["correlation"].mean().reset_index(),
+            on="feature",
+            suffixes=("", "_modality_mean"),
+        )
+
+    # Generate report
+    report = generate_correlation_markdown_report(df_corr)
+
+    # Save report
+    with open("correlation_report.md", "w") as f:
+        f.write(report)
+
+
+if __name__ == "__main__":
+    main()
