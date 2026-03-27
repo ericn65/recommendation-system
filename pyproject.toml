@@ -24,6 +24,7 @@ dependencies = [
     "networkx>=3.6.1",
     "numpy>=2.4.1",
     "pandas>=3.0.0",
+    "pydantic>=2.12.5",
     "pytest>=8.4.2",
     "python-dotenv>=1.2.1",
     "rich>=14.2.0",
